@@ -13,22 +13,26 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import NextLink from "next/link";
+import NextImage from "next/image";
 import { groq } from "next-sanity";
 import { getClient, imageBuilder } from "lib/sanity";
 import { gql, GraphQLClient } from "graphql-request";
-import { isMobile } from "react-device-detect";
 import { HiUserGroup, HiDesktopComputer, HiOutlineFilm } from "react-icons/hi";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import MultiText from "lib/MultiText";
+import { motion, AnimatePresence } from "framer-motion";
+import { wrap } from "@popmotion/popcorn";
 
 const EventCard = dynamic<any>(
   () => import("https://framer.com/m/Event-Card-p1O7.js@7fAs5knTBdn9N5rGWM3r"),
   { ssr: false }
 );
+
+const MotionBox = motion(Box);
 
 function HomePage({
   homepageData,
@@ -41,13 +45,24 @@ function HomePage({
   const featuredEvents = useRef<any>(null);
   const featuredWorkshops = useRef<any>(null);
 
-  const heroImageSrc = !isMobile
-    ? imageBuilder(homepageData.hero.image).width(2400).format("webp").url()
-    : imageBuilder(homepageData.hero.image)
-        .width(600)
-        .height(900)
-        .format("webp")
-        .url();
+  const [[page, direction], setPage] = useState([0, 0]);
+  const index = wrap(0, homepageData.carousel.length, page);
+
+  const paginate = (newDirection: number) => {
+    setPage([page + newDirection, newDirection]);
+  };
+
+  useEffect(() => {
+    let interval: any;
+
+    if (homepageData.carousel.length > 1) {
+      interval = setInterval(() => {
+        paginate(1);
+      }, 5000);
+    }
+
+    return () => clearInterval(interval);
+  }, [page]);
 
   const aboutImageSrc = imageBuilder(homepageData.about.image)
     .width(1800)
@@ -59,42 +74,60 @@ function HomePage({
         <title>{homepageData.pageTitle}</title>
         <meta name="description" content={homepageData.metaDescription} />
       </Head>
-      <Box
-        bgSize="cover"
-        bgPos={["bottom center", "center"]}
-        bgImage={heroImageSrc}
-        py={"200px"}
-        pos="relative"
-      >
-        <Container maxW="container.lg" centerContent textAlign={"center"}>
-          <Heading as="h1" size="4xl" mt={1}>
-            {homepageData.hero.title}
-          </Heading>
-          <Text>{homepageData?.hero.text}</Text>
-          {collections.edges[0]?.node.products.edges.length > 0 && (
-            <Button
-              mt={6}
-              onClick={() =>
-                featuredEvents.current?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              upcoming events →
-            </Button>
-          )}
-          {collections.edges[0]?.node.products.edges.length === 0 && (
-            <Button
-              mt={6}
-              onClick={() =>
-                featuredWorkshops.current?.scrollIntoView({
-                  behavior: "smooth",
-                })
-              }
-            >
-              featured workshops →
-            </Button>
-          )}
-        </Container>
-      </Box>
+      <AnimatePresence exitBeforeEnter>
+        <MotionBox
+          key={index}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+            transition: { duration: 0.5 },
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          py={"200px"}
+          pos="relative"
+        >
+          <Box
+            pos="absolute"
+            top={0}
+            left={0}
+            width={"100%"}
+            height={"100%"}
+            zIndex={-1}
+            opacity={0.8}
+          >
+            <NextImage
+              src={imageBuilder(homepageData.carousel[index].image).url()}
+              layout="fill"
+              objectFit="cover"
+              blurDataURL={imageBuilder(homepageData.carousel[index].image)
+                .height(40)
+                .url()}
+            />
+          </Box>
+          <Container maxW="container.lg" centerContent textAlign={"center"}>
+            <Heading as="h1" size="4xl" mt={1}>
+              {homepageData.carousel[index].title}
+            </Heading>
+            <Text>{homepageData.carousel[index].text}</Text>
+            <Stack direction={["column", "row"]} mt={6}>
+              {homepageData.carousel[index].buttons.map(
+                (
+                  button: { link: string; text: string; _key: string },
+                  index: number
+                ) => (
+                  <NextLink href={button.link} key={button._key}>
+                    <Button>{button.text}</Button>
+                  </NextLink>
+                )
+              )}
+            </Stack>
+          </Container>
+        </MotionBox>
+      </AnimatePresence>
       {/* product features */}
       <Container maxW="container.lg" pt={20} pb={20}>
         <Stack spacing={6} textAlign="center" alignItems={"center"}>

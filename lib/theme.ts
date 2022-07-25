@@ -26,9 +26,8 @@ const themeConfig = {
           color: mode("whiteAlpha.900", "whiteAlpha.900")(props),
           _hover: {
             color: mode("black", "whiteAlpha.900")(props),
-            // bg: mode("brand.lightBlue", "brand.darkBlue")(props)
           },
-        }),
+        })
       },
     },
     Heading: {

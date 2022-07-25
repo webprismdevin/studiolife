@@ -26,28 +26,11 @@ export default {
         group: 'seo'
       },
       {
-        name: 'hero',
-        title: 'Hero Section',
-        description: 'Main section on the homepage',
-        type: 'object',
+        name: 'carousel',
+        title: 'Hero Carousel',
+        type: 'array',
         group: 'content',
-        fields: [
-          {
-            title: "Title",
-            description:
-              "This title will appear in the hero unit at the top of the page",
-            type: "string",
-            name: "title",
-          },
-          {
-            name: 'image',
-            title: 'Hero Image',
-            type: 'image',
-            options: {
-              hotspot: true,
-            },
-          },
-        ]
+        of: [{ type: 'hero'}]
       },
       {
         name: 'belowTheFold',
