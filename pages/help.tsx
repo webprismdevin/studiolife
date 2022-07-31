@@ -16,15 +16,22 @@ import { getClient } from 'lib/sanity';
 import Head from 'next/head';
 import ContactForm from 'components/Contact';
 import { useRef } from 'react';
+import { useRouter } from 'next/router';
 
 export default function FAQ({ data }: { data: any }) {
   const form = useRef<HTMLDivElement>(null)
+  const router = useRouter();
 
   return (
     <>
       <Head>
-      <title>{data.pageTitle} | StudioLife</title>
-        <meta name="description" content={data.metaDescription} />
+      <title>{data.basicSEO?.title}</title>
+        <meta name="description" content={data.basicSEO?.description} />
+        <meta property="og:title" content={data.basicSEO?.ogTitle} />
+        <meta property="og:url" content={router.asPath} />
+        <meta property="og:image" content={data.basicSEO?.ogImage} />
+        <meta property="og:description" content={data.basicSEO?.ogDescription} />
+        <meta property="og:type" content="website" />
       </Head>
       <Box pt={[10, 20]} bg="brand.accent1" w="full">
         <Container maxW="container.lg" py={20} centerContent>

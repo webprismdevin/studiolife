@@ -21,7 +21,7 @@ import dayjs from "dayjs";
 import NextLink from 'next/link'
 
 const EventCard = dynamic<any>(
-  () => import("https://framer.com/m/Event-Card-p1O7.js@7fAs5knTBdn9N5rGWM3r"),
+  () => import("https://framer.com/m/Event-Card-p1O7.js@MFkLMZojOIAAfuSB3sN2"),
   { ssr: false }
 );
 
@@ -257,6 +257,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       handle: handle,
       data: res.collection,
     },
-    revalidate: 60,
+    revalidate: 10,
   };
 }

@@ -31,10 +31,12 @@ import { FaBox, FaClock, FaUserGraduate, FaUsers } from "react-icons/fa";
 import dayjs from "dayjs";
 import PhotoCarousel from "components/PhotoCarousel";
 import MultiText from "lib/MultiText";
+import { useRouter } from "next/router";
 
 //to-do: add "associated products" so that they can add additional kits like with Lettering for Light
 
 const Product = ({ handle, product }: { handle: string; product: any }) => {
+  const router = useRouter()
   const { cart, setCart } = useContext(CartContext);
   const [variantId, setVariantId] = useState(() => {
     if (!product) return null;
@@ -75,10 +77,25 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
         <title>
           {product.on_page_title?.value
             ? product.on_page_title.value
-            : product.title}{" "}
-          | StudioLife
+            : product.title}
+          | StudioLife Seattle
         </title>
         <meta name="description" content={product.short_description} />
+        <meta
+          property="og:title"
+          content={`${
+            product.on_page_title?.value
+              ? product.on_page_title.value
+              : product.title
+          } | StudioLife Seattle`}
+        />
+        <meta property="og:url" content={router.asPath} />
+        <meta property="og:image" content={product.images.edges[0].node.url} />
+        <meta
+          property="og:description"
+          content={product.short_description}
+        />
+        <meta property="og:type" content="website" />
       </Head>
       <Flex flexDirection={["column", "row"]}>
         <Box flexGrow={1} maxW={["full", "50%"]}>
@@ -337,6 +354,6 @@ export async function getStaticProps(context: any) {
       handle: handle,
       product: res.product,
     },
-    revalidate: 60,
+    revalidate: 10,
   };
 }

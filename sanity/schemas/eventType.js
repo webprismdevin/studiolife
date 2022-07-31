@@ -1,11 +1,15 @@
-import { GiPartyFlags } from 'react-icons/gi'
+import { GiPartyFlags } from 'react-icons/gi';
+import defaultGroups from './parts/defaultGroups';
+import basicSEO from './parts/basicSEO';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   name: 'eventType',
   title: 'Venue Rental Event Types',
   type: 'document',
   icon: GiPartyFlags,
+  groups: defaultGroups,
   fields: [
+    basicSEO,
     {
       name: 'name',
       title: 'Event Type',

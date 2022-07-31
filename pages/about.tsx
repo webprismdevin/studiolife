@@ -17,13 +17,23 @@ import { getClient, imageBuilder } from "lib/sanity";
 import { groq } from "next-sanity";
 import Head from "next/head";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 
 const About = ({ page }: any) => {
+  const router = useRouter();
   return (
     <>
       <Head>
-        <title>{page.pageTitle} | StudioLife</title>
-        <meta name="description" content={page.metaDescription} />
+        <title>{page.basicSEO?.title}</title>
+        <meta name="description" content={page.basicSEO?.description} />
+        <meta property="og:title" content={page.basicSEO?.ogTitle} />
+        <meta property="og:url" content={router.asPath} />
+        <meta property="og:image" content={page.basicSEO?.ogImage} />
+        <meta
+          property="og:description"
+          content={page.basicSEO?.ogDescription}
+        />
+        <meta property="og:type" content="website" />
       </Head>
       <Container pt={40} maxW="container.lg">
         <Stack>

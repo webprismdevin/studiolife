@@ -23,13 +23,20 @@ import {
 } from "react-icons/hi";
 import NextLink from "next/link";
 import MultiText from "lib/MultiText";
+import { useRouter } from "next/router";
 
 export default function PrivateEvents({ page }: any) {
+  const router = useRouter();
   return (
     <>
       <Head>
-        <title>{page.pageTitle} | StudioLife</title>
-        <meta name="description" content={page.metaDescription} />
+      <title>{page.basicSEO?.title}</title>
+        <meta name="description" content={page.basicSEO?.description} />
+        <meta property="og:title" content={page.basicSEO?.ogTitle} />
+        <meta property="og:url" content={router.asPath} />
+        <meta property="og:image" content={page.basicSEO?.ogImage} />
+        <meta property="og:description" content={page.basicSEO?.ogDescription} />
+        <meta property="og:type" content="website" />
       </Head>
       <Box
         bgImage={imageBuilder(page.hero.image).url()}

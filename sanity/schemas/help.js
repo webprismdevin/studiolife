@@ -1,36 +1,17 @@
 /* eslint-disable import/no-anonymous-default-export */
+
+import basicSEO from "./parts/basicSEO";
+import defaultGroups from "./parts/defaultGroups";
+
 // studio/schemas/about.js
 export default {
     name: "help",
     title: "Help",
     type: "document",
-  
-    // These actions define what users can do with this document.
-    // Notice how "delete" is not available in this array.
-    // This means, users can't delete this document
-    // from within the studio
     __experimental_actions: ["update", "create", "publish"],
-    groups: [{
-      default: true,
-      name: 'content',
-      title: 'Content'
-    },{
-      name: 'seo',
-      title: 'SEO'
-    }],
+    groups: defaultGroups,
     fields: [
-      {
-        name: 'pageTitle',
-        title: 'Page Title',
-        type: 'string',
-        group: 'seo'
-      },
-      {
-        name: 'metaDescription',
-        title: 'Meta Description',
-        type: 'text',
-        group: 'seo'
-      },
+      basicSEO,
       {
         title: "Hero Heading",
         description:

@@ -61,7 +61,7 @@ export default function NewPassword({ reset_url }: {reset_url: string}) {
   return (
     <Container py={40}>
         <Head>
-            <title>{process.env.NX_NEXT_PUBLIC_SHOP_NAME} | Set Your New Passwords</title>
+            <title>{process.env.NX_NEXT_PUBLIC_SHOP_NAME} | Set Your New Password</title>
         </Head>
       <Stack alignItems={"flex-start"}>
         <Heading size="lg">Reset Your Password</Heading>

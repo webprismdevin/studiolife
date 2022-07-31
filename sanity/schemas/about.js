@@ -1,4 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
+
+import basicSEO from "./parts/basicSEO";
+import defaultGroups from "./parts/defaultGroups";
+
 // studio/schemas/about.js
 export default {
   name: "about",
@@ -10,28 +14,9 @@ export default {
   // This means, users can't delete this document
   // from within the studio
   __experimental_actions: ["update", "create", "publish"],
-  groups: [
-    {
-      name: 'content',
-      title: 'Content',
-      default: true
-    },
-    {
-      name: 'seo',
-      title: 'SEO',
-    }
-  ],
+  groups: defaultGroups,
   fields: [
-    {
-      name: 'pageTitle',
-      type: 'string',
-      group: 'seo'
-    },
-    {
-      name: 'metaDescription',
-      type: 'text',
-      group: 'seo'
-    },
+    basicSEO,
     {
       name: 'largeText',
       title: 'Large Text',

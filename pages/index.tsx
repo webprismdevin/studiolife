@@ -28,7 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "@popmotion/popcorn";
 
 const EventCard = dynamic<any>(
-  () => import("https://framer.com/m/Event-Card-p1O7.js@7fAs5knTBdn9N5rGWM3r"),
+  () => import("https://framer.com/m/Event-Card-p1O7.js@MFkLMZojOIAAfuSB3sN2"),
   { ssr: false }
 );
 
@@ -71,8 +71,13 @@ function HomePage({
   return (
     <>
       <Head>
-        <title>{homepageData.pageTitle}</title>
-        <meta name="description" content={homepageData.metaDescription} />
+        <title>{homepageData.basicSEO?.title}</title>
+        <meta name="description" content={homepageData.basicSEO?.description} />
+        <meta property="og:title" content={homepageData.basicSEO?.ogTitle} />
+        <meta property="og:url" content={router.asPath} />
+        <meta property="og:image" content={homepageData.basicSEO?.ogImage} />
+        <meta property="og:description" content={homepageData.basicSEO?.ogDescription} />
+        <meta property="og:type" content="website" />
       </Head>
       <AnimatePresence exitBeforeEnter>
         <MotionBox
@@ -223,14 +228,13 @@ function HomePage({
                 ({ node }: { node: any }) => (
                   <Box key={node.id}>
                     <EventCard
-                      // Using default values:
                       date={dayjs(node.date?.value).format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
                       eventName={node.on_page_title.value}
                       eventType={node.productType}
                       image={node.images.edges[0].node.transformedSrc}
                       style={{
-                        minHeight: "100%",
+                        minHeight: "100%"
                       }}
                       shortDesc={
                         node.short_description?.value
@@ -298,39 +302,43 @@ function HomePage({
             <Stack
               direction={["column", "row"]}
               justify="center"
-              align="center"
+              align="stretch"
               spacing={6}
               w="full"
             >
               {collections.edges[1].node.products.edges.map(
-                ({ node }: { node: any }) => (
-                  <Box key={node.id}>
-                    <EventCard
-                      style={{
-                        minHeight: "100%",
-                      }}
-                      date={dayjs(node.date?.value).format("MMMM DD, YYYY")}
-                      duration={node.duration?.value}
-                      eventName={node.on_page_title?.value}
-                      eventType={"Recorded Workshop"}
-                      image={node.images.edges[0].node.transformedSrc}
-                      shortDesc={
-                        node.short_description?.value
-                          ? node.short_description?.value
-                          : "No description found. Click Sign Up to learn more."
-                      }
-                      teacher={node.teacher.value}
-                      time={dayjs(node.date?.value).format("hh:mm A PST")}
-                      tap={() => router.push(`/workshop/${node.handle}`)}
-                      variant="Workshop"
-                      cta={"learn more"}
-                    />
-                  </Box>
-                )
+                (product:any, index:number) => {
+                  if(index < 3){
+                    return (
+                      <Box key={product.node.id} minH="100%">
+                        <EventCard
+                          style={{
+                            minHeight: "100%",
+                          }}
+                          date={dayjs(product.node.date?.value).format("MMMM DD, YYYY")}
+                          duration={product.node.duration?.value}
+                          eventName={product.node.on_page_title?.value}
+                          eventType={"Recorded Workshop"}
+                          image={product.node.images.edges[0].node.transformedSrc}
+                          shortDesc={
+                            product.node.short_description?.value
+                              ? product.node.short_description?.value
+                              : "No description found. Click Sign Up to learn more."
+                          }
+                          teacher={product.node.teacher.value}
+                          time={dayjs(product.node.date?.value).format("hh:mm A PST")}
+                          tap={() => router.push(`/workshop/${product.node.handle}`)}
+                          variant="Workshop"
+                          cta={"learn more"}
+                        />
+                      </Box>
+                    )
+                  }
+                }
               )}
             </Stack>
             <NextLink href="/collection/recorded-workshops">
-              <Link>see all</Link>
+              <Button variant="solid">see all workshops</Button>
             </NextLink>
           </VStack>
         )}

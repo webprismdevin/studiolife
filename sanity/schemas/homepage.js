@@ -1,30 +1,16 @@
 /* eslint-disable import/no-anonymous-default-export */
+
+import defaultGroups from "./parts/defaultGroups";
+import basicSEO from "./parts/basicSEO";
+
 // studio/schemas/homepage.js
 export default {
     name: "homepage",
     title: "Homepage",
     type: "document",
-    groups: [{
-      default: true,
-      name: 'content',
-      title: 'Content'
-    },{
-      name: 'seo',
-      title: 'SEO'
-    }],
+    groups: defaultGroups,
     fields: [
-      {
-        name: 'pageTitle',
-        title: 'Page Title',
-        type: 'string',
-        group: 'seo'
-      },
-      {
-        name: 'metaDescription',
-        title: 'Meta Description',
-        type: 'text',
-        group: 'seo'
-      },
+      basicSEO,
       {
         name: 'carousel',
         title: 'Hero Carousel',

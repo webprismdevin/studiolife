@@ -64,6 +64,7 @@ declare global {
   interface Window {
     Tawk_API: any;
     fd: any;
+    dataLayer: any;
   }
 }
 
@@ -150,6 +151,48 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Script id="flodesk_popup_2">
         {`window.fd("form", { formId: "626ac1571e8046b220253bfa",});`}
       </Script>
+      {process.env.NODE_ENV === "production" && (
+        <>
+          <Script
+            id="facebook_pixel"
+            dangerouslySetInnerHTML={{
+              __html: `!function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '462105627892590');
+          fbq('track', 'PageView');`,
+            }}
+          />
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `<img
+            height="1"
+            width="1"
+            style="display:none"
+            src="https://www.facebook.com/tr?id=1112313415541866&ev=PageView&noscript=1"
+          />`,
+            }}
+          />
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-4QQ6H6YV6D"
+            onLoad={() => {
+              window.dataLayer = window.dataLayer || [];
+              function gtag() {
+                window.dataLayer.push(arguments);
+              }
+              //@ts-ignore
+              gtag("js", new Date());
+              //@ts-ignore
+              gtag("config", "G-4QQ6H6YV6D");
+            }}
+          />
+        </>
+      )}
     </ChakraProvider>
   );
 }
