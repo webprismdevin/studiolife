@@ -33,6 +33,13 @@ import PhotoCarousel from "components/PhotoCarousel";
 import MultiText from "lib/MultiText";
 import { useRouter } from "next/router";
 
+var utc = require('dayjs/plugin/utc');
+var timezone = require('dayjs/plugin/timezone')
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+
 //to-do: add "associated products" so that they can add additional kits like with Lettering for Light
 
 const Product = ({ handle, product }: { handle: string; product: any }) => {
@@ -108,9 +115,15 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
           maxW={["full", "50%"]}
         >
           <Stack direction={"column"} spacing={2} alignItems={"flex-start"}>
-            <Text>
-              {dayjs(product.date?.value).format("dddd, MMMM DD, YYYY")}
-            </Text>
+            <HStack>
+              <Text>
+                {dayjs(product.date?.value).format("dddd, MMMM DD, YYYY")}
+              </Text>
+              <Text>
+                {/* @ts-ignore */}
+                {dayjs(product.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
+              </Text>
+            </HStack>
             <HStack justify={"space-between"} w="full">
               <Heading>
                 {product.on_page_title?.value
@@ -208,71 +221,71 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
 
 export default Product;
 
-export async function getStaticPaths() {
-  const graphQLClient = new GraphQLClient(
-    process.env.NEXT_PUBLIC_SHOPIFY_URL!,
-    {
-      headers: {
-        "X-Shopify-Storefront-Access-Token": process.env.NEXT_PUBLIC_TOKEN!,
-      },
-    }
-  );
+// export async function getStaticPaths() {
+//   const graphQLClient = new GraphQLClient(
+//     process.env.NEXT_PUBLIC_SHOPIFY_URL!,
+//     {
+//       headers: {
+//         "X-Shopify-Storefront-Access-Token": process.env.NEXT_PUBLIC_TOKEN!,
+//       },
+//     }
+//   );
 
-  const query = gql`
-    {
-      products(first: 200) {
-        edges {
-          node {
-            id
-            title
-            handle
-            description
-            tags
-            variants(first: 100) {
-              edges {
-                node {
-                  id
-                  title
-                  priceV2 {
-                    amount
-                  }
-                }
-              }
-            }
-            images(first: 10) {
-              edges {
-                node {
-                  url
-                }
-              }
-            }
-            priceRange {
-              maxVariantPrice {
-                amount
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
+//   const query = gql`
+//     {
+//       products(first: 200) {
+//         edges {
+//           node {
+//             id
+//             title
+//             handle
+//             description
+//             tags
+//             variants(first: 100) {
+//               edges {
+//                 node {
+//                   id
+//                   title
+//                   priceV2 {
+//                     amount
+//                   }
+//                 }
+//               }
+//             }
+//             images(first: 10) {
+//               edges {
+//                 node {
+//                   url
+//                 }
+//               }
+//             }
+//             priceRange {
+//               maxVariantPrice {
+//                 amount
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   `;
 
-  const res = await graphQLClient.request(query);
+//   const res = await graphQLClient.request(query);
 
-  if (res.errors) {
-    console.log(JSON.stringify(res.errors, null, 2));
-    throw Error("Unable to retrieve Shopify Products. Please check logs");
-  }
+//   if (res.errors) {
+//     console.log(JSON.stringify(res.errors, null, 2));
+//     throw Error("Unable to retrieve Shopify Products. Please check logs");
+//   }
 
-  return {
-    paths: res.products.edges.map((edge: any) => ({
-      params: { handle: edge.node.handle },
-    })),
-    fallback: false,
-  };
-}
+//   return {
+//     paths: res.products.edges.map((edge: any) => ({
+//       params: { handle: edge.node.handle },
+//     })),
+//     fallback: false,
+//   };
+// }
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
   const handle = context.params.handle;
 
   const graphQLClient = new GraphQLClient(
@@ -339,8 +352,7 @@ export async function getStaticProps(context: any) {
         }
       }
     }
-  }
-  `;
+  }`;
 
   const res = await graphQLClient.request(query);
 
@@ -353,7 +365,6 @@ export async function getStaticProps(context: any) {
     props: {
       handle: handle,
       product: res.product,
-    },
-    revalidate: 10,
+    }
   };
 }

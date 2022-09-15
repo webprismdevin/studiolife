@@ -34,6 +34,14 @@ const EventCard = dynamic<any>(
 
 const MotionBox = motion(Box);
 
+var utc = require('dayjs/plugin/utc');
+var timezone = require('dayjs/plugin/timezone')
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+
+
 function HomePage({
   homepageData,
   collections,
@@ -242,7 +250,8 @@ function HomePage({
                           : "No description found. Click Sign Up to learn more."
                       }
                       teacher={node.teacher.value}
-                      time={dayjs(node.date?.value).format("hh:mm A PST")}
+                      //@ts-ignore
+                      time={dayjs(node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
                       tap={() => router.push(`/event/${node.handle}`)}
                       variant="LiveEvent"
                       cta="Sign Up"
@@ -326,7 +335,7 @@ function HomePage({
                               : "No description found. Click Sign Up to learn more."
                           }
                           teacher={product.node.teacher.value}
-                          time={dayjs(product.node.date?.value).format("hh:mm A PST")}
+                          // time={dayjs(product.node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
                           tap={() => router.push(`/workshop/${product.node.handle}`)}
                           variant="Workshop"
                           cta={"learn more"}
