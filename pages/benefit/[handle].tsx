@@ -22,8 +22,17 @@ import CartContext from "lib/CartContext";
 import formatter from "lib/formatter";
 import { FaClock, FaUserGraduate } from "react-icons/fa";
 import { GetStaticPropsContext } from "next";
+import dayjs from "dayjs";
 
 //to-do: add "associated products" so that they can add additional kits like with Lettering for Light
+
+
+var utc = require('dayjs/plugin/utc');
+var timezone = require('dayjs/plugin/timezone')
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 
 const Product = ({ handle, product }: { handle: string; product: any }) => {
   const { cart, setCart } = useContext(CartContext);
@@ -81,7 +90,14 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
         <Container centerContent pt={20} pb={20}>
           <Stack direction={["column"]} spacing={8} w="full">
             <Stack direction={"column"} spacing={2} alignItems={"flex-start"}>
-              <Text>{new Date(product.date?.value).toLocaleDateString()}</Text>
+              <HStack>
+                {/* @ts-ignore */}
+                <Text>{new Date(product.date?.value).toLocaleDateString()}</Text>
+                <Text>
+                  {/* @ts-ignore */}
+                  {dayjs(product.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
+                </Text>
+              </HStack>
               <Heading>{product.title}</Heading>
               <HStack spacing={2}>
                 <Tag size="lg">

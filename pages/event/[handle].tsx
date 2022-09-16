@@ -117,7 +117,8 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
           <Stack direction={"column"} spacing={2} alignItems={"flex-start"}>
             <HStack>
               <Text>
-                {dayjs(product.date?.value).format("dddd, MMMM DD, YYYY")}
+                {/* @ts-ignore */}
+                {dayjs(product.date?.value).tz("America/Los_Angeles").format("dddd, MMMM DD, YYYY")}
               </Text>
               <Text>
                 {/* @ts-ignore */}

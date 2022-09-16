@@ -236,7 +236,8 @@ function HomePage({
                 ({ node }: { node: any }) => (
                   <Box key={node.id}>
                     <EventCard
-                      date={dayjs(node.date?.value).format("MMMM DD, YYYY")}
+                      //@ts-ignore
+                      date={dayjs(node.date?.value).tz("America/Los_Angeles").format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
                       eventName={node.on_page_title.value}
                       eventType={node.productType}
@@ -324,7 +325,7 @@ function HomePage({
                           style={{
                             minHeight: "100%",
                           }}
-                          date={dayjs(product.node.date?.value).format("MMMM DD, YYYY")}
+                          // date={dayjs(product.node.date?.value).tz("America/Los_Angeles").format("MMMM DD, YYYY")}
                           duration={product.node.duration?.value}
                           eventName={product.node.on_page_title?.value}
                           eventType={"Recorded Workshop"}
