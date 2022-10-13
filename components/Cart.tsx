@@ -36,9 +36,10 @@ const Cart = () => {
 
   useEffect(() => {
     if (cart.lines.length > 1) {
-      const cartQtyCalc = cart.lines.reduce((prev: any, next: any) => {
-        return prev.node.quantity + next.node.quantity;
-      });
+      const cartQtyCalc = cart.lines.reduce(
+        (partialSum: any, current: any) => partialSum + current.node?.quantity,
+        0
+      );
       setCartQty(cartQtyCalc);
     }
 

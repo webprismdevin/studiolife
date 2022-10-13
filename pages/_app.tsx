@@ -178,19 +178,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           />`,
             }}
           />
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-4QQ6H6YV6D"
-            onLoad={() => {
-              window.dataLayer = window.dataLayer || [];
-              function gtag() {
-                window.dataLayer.push(arguments);
-              }
-              //@ts-ignore
-              gtag("js", new Date());
-              //@ts-ignore
-              gtag("config", "G-4QQ6H6YV6D");
-            }}
-          />
+          <Script id="clarity">{`(function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "e2jqlaz97u");`}</Script>
         </>
       )}
     </ChakraProvider>
