@@ -211,7 +211,7 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Add To Cart
+              Close
             </Button>
           </ModalFooter>
         </ModalContent>
