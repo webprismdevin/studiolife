@@ -35,28 +35,30 @@ export default function GiftCard({ product }: any) {
   }
 
   return (
-    <Container>
-      <Stack spacing={4}>
+    <Container maxW="container.xl" py={10}>
+      <Stack spacing={4} direction={["column", null, "row"]}>
         <Box>
           <Image src={selectedVariantImage.url} alt={selectedVariantImage.altText} />
         </Box>
-        <Heading size={"2xl"}>Gift Cards</Heading>
-        <Box>
-          <Text mb={2}>Select A Gift Value</Text>
-          <Select onChange={handleOptionChange} name={"Denominations"}>
-            {product.options[0].values.map((option: any) => (
-              <option value={option} key={option}>
-                {option}
-              </option>
-            ))}
-          </Select>
-        </Box>
-        <Button width="full" onClick={addToCart}>Add To Cart</Button>
-        <Box 
-          dangerouslySetInnerHTML={{
-            __html: product.descriptionHtml
-          }}
-        />
+        <Stack spacing={4} maxW={["full", null, "50%"]}>
+          <Heading size={"2xl"}>Gift Cards</Heading>
+          <Box>
+            <Text mb={2}>Select A Gift Value</Text>
+            <Select onChange={handleOptionChange} name={"Denominations"}>
+              {product.options[0].values.map((option: any) => (
+                <option value={option} key={option}>
+                  {option}
+                </option>
+              ))}
+            </Select>
+          </Box>
+          <Button width="full" onClick={addToCart}>Add To Cart</Button>
+          <Box
+            dangerouslySetInnerHTML={{
+              __html: product.descriptionHtml
+            }}
+          />
+        </Stack>
       </Stack>
     </Container>
   );
