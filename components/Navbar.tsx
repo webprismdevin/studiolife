@@ -120,7 +120,7 @@ const Navbar = () => {
               </MenuList>
             </Menu>
             <Divider orientation="vertical" height={"40px"} />
-            <NextLink href="/">
+            <NextLink href="/gift-cards">
               <Link>Gift Cards</Link>
             </NextLink>
             <Divider orientation="vertical" height={"40px"} />
