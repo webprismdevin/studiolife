@@ -140,8 +140,8 @@ function MenuModules({ links }: { links: any }) {
       return <LinkGroup links={links.links} title={links.title} />;
     default:
       return (
-        <NextLink href={links.url}>
-          <Link>{links.title}</Link>
+        <NextLink href={links.url} passHref>
+          <Link target={links.newWindow ? "_blank" : "_self"}>{links.title}</Link>
         </NextLink>
       );
   }
@@ -156,7 +156,7 @@ function CollectionGroup({ links, title }: { links: any; title: string }) {
       <MenuList>
         {links.map((link: any) => (
           <MenuItem key={link._key}>
-            <NextLink href={`/collection/${link.handle}`} passHref>
+            <NextLink href={`/collection/${link.handle}`}>
               <Link>{link.title}</Link>
             </NextLink>
           </MenuItem>
