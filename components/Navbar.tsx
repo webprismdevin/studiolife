@@ -1,10 +1,8 @@
 import {
   Box,
   Stack,
-  Text,
   Link,
   useDisclosure,
-  Button,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -12,7 +10,6 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  Input,
   Menu,
   MenuButton,
   MenuList,
@@ -25,17 +22,36 @@ import { useRouter } from "next/router";
 import Cart from "./Cart";
 import { Search } from "./Search";
 import NextLink from "next/link";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   HiChevronDown,
   HiMenuAlt2,
   HiOutlineUser,
   HiUser,
 } from "react-icons/hi";
+import useSWR from "swr";
+import { sanityClient } from "lib/sanity";
+ 
+const fetcher = (query: string) => sanityClient.fetch(query);
+
+const query = `*[ _type == "settings" ][0]{
+  menu {
+    links[] {
+      ...,
+      _type == "collectionGroup" => {
+        collectionLinks[]-> {
+          "title": store.title,
+          "handle": store.slug.current
+        }
+      },
+    }
+  }
+}`;
 
 const Navbar = () => {
   const router = useRouter();
   const [auth, setAuth] = useState(false);
+  const { data, error } = useSWR(query, fetcher);
 
   useEffect(() => {
     async function checkToken() {
@@ -72,7 +88,7 @@ const Navbar = () => {
         align="center"
       >
         <Stack direction="row" align="center" spacing={6}>
-          <MobileMenu />
+          {data && <MobileMenu data={data} />}
           <NextLink href="/" passHref>
             <Link fontFamily="Julietta" fontSize="4xl" pb={2}>
               StudioLife
@@ -84,68 +100,15 @@ const Navbar = () => {
             align="center"
             spacing={6}
           >
-            <Menu>
-              <MenuButton as={Link} rightIcon={<HiChevronDown />}>
-                Events &amp; Workshops
-              </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <NextLink href="/collection/live-events" passHref>
-                    <Link>Live Events</Link>
-                  </NextLink>
-                </MenuItem>
-                <MenuItem>
-                  <NextLink href="/collection/recorded-workshops" passHref>
-                    <Link>Recorded Workshops</Link>
-                  </NextLink>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Divider orientation="vertical" height={"40px"} />
-            <Menu>
-              <MenuButton as={Link} rightIcon={HiChevronDown}>
-                Private Events
-              </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <NextLink href="/private-events" passHref>
-                    <Link>Private &amp; Corporate Events</Link>
-                  </NextLink>
-                </MenuItem>
-                <MenuItem>
-                  <NextLink href="/private-events#space-rentals" passHref>
-                    <Link>Venue Rentals</Link>
-                  </NextLink>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Divider orientation="vertical" height={"40px"} />
-            <NextLink href="/gift-cards">
-              <Link>Gift Cards</Link>
-            </NextLink>
-            <Divider orientation="vertical" height={"40px"} />
-            <Menu>
-              <MenuButton as={Link} rightIcon={HiChevronDown}>
-                More
-              </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <NextLink href="/partner" passHref>
-                    <Link>Partner with Us</Link>
-                  </NextLink>
-                </MenuItem>
-                <MenuItem>
-                  <NextLink href="/about" passHref>
-                    <Link>About Us</Link>
-                  </NextLink>
-                </MenuItem>
-                <MenuItem>
-                  <NextLink href="/help" passHref>
-                    <Link>Help &amp; Contact</Link>
-                  </NextLink>
-                </MenuItem>
-              </MenuList>
-            </Menu>
+            {data &&
+              data.menu.links.map((links: any, index: number) => (
+                <React.Fragment key={links._key}>
+                  <MenuModules key={links._key} links={links} />
+                  {index !== data.menu.links.length - 1 && (
+                    <Divider orientation="vertical" height={"40px"} />
+                  )}
+                </React.Fragment>
+              ))}
           </Stack>
         </Stack>
         <Stack direction={"row"} align="center" spacing={6}>
@@ -156,6 +119,7 @@ const Navbar = () => {
               as={HiOutlineUser}
               boxSize={7}
               variant={"ghost"}
+              display={["none", null, "inherit"]}
             />
             <Search router={router} />
             <Cart />
@@ -166,9 +130,72 @@ const Navbar = () => {
   );
 };
 
-function MobileMenu() {
+function MenuModules({ links }: { links: any }) {
+  switch (links._type) {
+    case "collectionGroup":
+      return (
+        <CollectionGroup links={links.collectionLinks} title={links.title} />
+      );
+    case "linkGroup":
+      return <LinkGroup links={links.links} title={links.title} />;
+    default:
+      return (
+        <NextLink href={links.url}>
+          <Link>{links.title}</Link>
+        </NextLink>
+      );
+  }
+}
+
+function CollectionGroup({ links, title }: { links: any; title: string }) {
+  return (
+    <Menu>
+      <MenuButton as={Link} rightIcon={<HiChevronDown />}>
+        {title}
+      </MenuButton>
+      <MenuList>
+        {links.map((link: any) => (
+          <MenuItem key={link._key}>
+            <NextLink href={`/collection/${link.handle}`} passHref>
+              <Link>{link.title}</Link>
+            </NextLink>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  );
+}
+
+function LinkGroup({ links, title }: { links: any; title: string }) {
+  return (
+    <Menu>
+      <MenuButton as={Link} rightIcon={<HiChevronDown />}>
+        {title}
+      </MenuButton>
+      <MenuList>
+        {links.map((link: any) => (
+          <MenuItem key={link._key}>
+            <NextLink href={`${link.url}`} passHref>
+              <Link>{link.title}</Link>
+            </NextLink>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  );
+}
+
+function MobileMenu({ data }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
+
+  const [auth, setAuth] = useState(false);
   const btnRef = useRef<any>();
+
+  function handleLoginOrAccount() {
+    if (auth) router.push("/account");
+    else router.push("/login");
+  }
 
   return (
     <>
@@ -196,35 +223,72 @@ function MobileMenu() {
 
           <DrawerBody>
             <Stack spacing={4}>
-              <NextLink href="/collection/live-events" passHref>
-                <Link fontSize="lg">Live Events</Link>
-              </NextLink>
-              <NextLink href="/collection/recorded-workshops" passHref>
-                <Link fontSize="lg">Recorded Workshops</Link>
-              </NextLink>
-              <Divider />
-              <NextLink href="/private-events" passHref>
-                <Link fontSize="lg">Private &amp; Corporate Events</Link>
-              </NextLink>
-              <NextLink href="/private-events#space-rentals" passHref>
-                <Link fontSize="lg">Venue Rentals</Link>
-              </NextLink>
-              <Divider />
-              <NextLink href="/partner" passHref>
-                <Link fontSize="lg">Partner with Us</Link>
-              </NextLink>
-              <NextLink href="/about" passHref>
-                <Link fontSize="lg">About Us</Link>
-              </NextLink>
-              <NextLink href="/help" passHref>
-                <Link fontSize="lg">Help &amp; Contact</Link>
-              </NextLink>
+              {data.menu.links.map((links: any, index: number) => (
+                <React.Fragment key={links._key}>
+                  <MobileMenuModules key={links._key} links={links} />
+                  {index !== data.menu.links.length - 1 && (
+                    <Divider orientation="horizontal" />
+                  )}
+                </React.Fragment>
+              ))}
             </Stack>
           </DrawerBody>
-          <DrawerFooter></DrawerFooter>
+          <DrawerFooter>
+            <Link onClick={handleLoginOrAccount} fontSize={"lg"}>Account</Link>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
+  );
+}
+
+function MobileMenuModules({ links }: { links: any }) {
+  switch (links._type) {
+    case "collectionGroup":
+      return (
+        <MobileCollectionGroup
+          links={links.collectionLinks}
+          title={links.title}
+        />
+      );
+    case "linkGroup":
+      return <MobileLinkGroup links={links.links} title={links.title} />;
+    default:
+      return (
+        <NextLink href={links.url}>
+          <Link>{links.title}</Link>
+        </NextLink>
+      );
+  }
+}
+
+function MobileCollectionGroup({
+  links,
+  title,
+}: {
+  links: any;
+  title: string;
+}) {
+  return (
+    <React.Fragment>
+      {links.map((link: any) => (
+        <NextLink key={link._key} href={`/collection/${link.handle}`} passHref>
+          <Link fontSize="lg">{link.title}</Link>
+        </NextLink>
+      ))}
+    </React.Fragment>
+  );
+}
+
+function MobileLinkGroup({ links, title }: { links: any; title: string }) {
+  return (
+    <React.Fragment>
+      {links.map((link: any) => (
+        <NextLink key={link._key} href={link.url}>
+          <Link fontSize="lg">{link.title}</Link>
+        </NextLink>
+      ))}
+    </React.Fragment>
   );
 }
 
