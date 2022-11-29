@@ -222,71 +222,71 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
 
 export default Product;
 
-// export async function getStaticPaths() {
-//   const graphQLClient = new GraphQLClient(
-//     process.env.NEXT_PUBLIC_SHOPIFY_URL!,
-//     {
-//       headers: {
-//         "X-Shopify-Storefront-Access-Token": process.env.NEXT_PUBLIC_TOKEN!,
-//       },
-//     }
-//   );
+export async function getStaticPaths() {
+  const graphQLClient = new GraphQLClient(
+    process.env.NEXT_PUBLIC_SHOPIFY_URL!,
+    {
+      headers: {
+        "X-Shopify-Storefront-Access-Token": process.env.NEXT_PUBLIC_TOKEN!,
+      },
+    }
+  );
 
-//   const query = gql`
-//     {
-//       products(first: 200) {
-//         edges {
-//           node {
-//             id
-//             title
-//             handle
-//             description
-//             tags
-//             variants(first: 100) {
-//               edges {
-//                 node {
-//                   id
-//                   title
-//                   priceV2 {
-//                     amount
-//                   }
-//                 }
-//               }
-//             }
-//             images(first: 10) {
-//               edges {
-//                 node {
-//                   url
-//                 }
-//               }
-//             }
-//             priceRange {
-//               maxVariantPrice {
-//                 amount
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   `;
+  const query = gql`
+    {
+      products(first: 200) {
+        edges {
+          node {
+            id
+            title
+            handle
+            description
+            tags
+            variants(first: 100) {
+              edges {
+                node {
+                  id
+                  title
+                  priceV2 {
+                    amount
+                  }
+                }
+              }
+            }
+            images(first: 10) {
+              edges {
+                node {
+                  url
+                }
+              }
+            }
+            priceRange {
+              maxVariantPrice {
+                amount
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
 
-//   const res = await graphQLClient.request(query);
+  const res = await graphQLClient.request(query);
 
-//   if (res.errors) {
-//     console.log(JSON.stringify(res.errors, null, 2));
-//     throw Error("Unable to retrieve Shopify Products. Please check logs");
-//   }
+  if (res.errors) {
+    console.log(JSON.stringify(res.errors, null, 2));
+    throw Error("Unable to retrieve Shopify Products. Please check logs");
+  }
 
-//   return {
-//     paths: res.products.edges.map((edge: any) => ({
-//       params: { handle: edge.node.handle },
-//     })),
-//     fallback: false,
-//   };
-// }
+  return {
+    paths: res.products.edges.map((edge: any) => ({
+      params: { handle: edge.node.handle },
+    })),
+    fallback: 'blocking',
+  };
+}
 
-export async function getServerSideProps(context: any) {
+export async function getStaticProps(context: any) {
   const handle = context.params.handle;
 
   const graphQLClient = new GraphQLClient(

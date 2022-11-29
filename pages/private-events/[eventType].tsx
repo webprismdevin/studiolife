@@ -132,7 +132,7 @@ export async function getStaticPaths() {
     paths: result.map((e: any) => ({
       params: { eventType: e.slug.current },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 }
 

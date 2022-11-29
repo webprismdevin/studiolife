@@ -217,7 +217,7 @@ export async function getStaticPaths() {
     paths: res.products.edges.map((edge: any) => ({
       params: { handle: edge.node.handle },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 }
 
