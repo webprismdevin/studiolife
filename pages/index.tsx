@@ -239,7 +239,7 @@ function HomePage({
                       //@ts-ignore
                       date={dayjs(node.date?.value).tz("America/Los_Angeles").format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
-                      eventName={node.on_page_title.value}
+                      eventName={node.on_page_title?.value ? node.on_page_title.value : node.title}
                       eventType={node.productType}
                       image={node.images.edges[0].node.transformedSrc}
                       style={{
@@ -250,7 +250,7 @@ function HomePage({
                           ? node.short_description?.value
                           : "No description found. Click Sign Up to learn more."
                       }
-                      teacher={node.teacher.value}
+                      teacher={node.teacher?.value}
                       //@ts-ignore
                       time={dayjs(node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
                       tap={() => router.push(`/event/${node.handle}`)}
@@ -335,7 +335,7 @@ function HomePage({
                               ? product.node.short_description?.value
                               : "No description found. Click Sign Up to learn more."
                           }
-                          teacher={product.node.teacher.value}
+                          teacher={product.node.teacher?.value}
                           // time={dayjs(product.node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
                           tap={() => router.push(`/workshop/${product.node.handle}`)}
                           variant="Workshop"
