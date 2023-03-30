@@ -91,8 +91,8 @@ export default function CollectionPage({
                     <EventCard
                       // Using default values:
                       date={dayjs(p.node.date?.value).format("MMMM DD, YYYY")}
-                      duration={p.node.duration?.value}
-                      eventName={p.node.on_page_title?.value}
+                      duration={p.node.duration?.value ? p.node.duration?.value : "TBD"}
+                      eventName={p.node.on_page_title?.value ? p.node.on_page_title?.value : p.node.title}
                       eventType={
                         p.node.productType === "On-Demand Workshop"
                           ? "Recorded Workshop"
@@ -107,7 +107,7 @@ export default function CollectionPage({
                           ? p.node.short_description?.value
                           : "No description found. Click Sign Up to learn more."
                       }
-                      teacher={p.node.teacher.value}
+                      teacher={p.node.teacher?.value ? p.node.teacher?.value : "TBD"}
                       time={dayjs(p.node.date?.value).format("hh:mm A PST")}
                       tap={() =>
                         router.push(

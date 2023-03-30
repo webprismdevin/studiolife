@@ -239,7 +239,7 @@ function HomePage({
                       //@ts-ignore
                       date={dayjs(node.date?.value).tz("America/Los_Angeles").format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
-                      eventName={node.on_page_title.value}
+                      eventName={node.on_page_title?.value ? node.on_page_title.value : node.title}
                       eventType={node.productType}
                       image={node.images.edges[0].node.transformedSrc}
                       style={{
