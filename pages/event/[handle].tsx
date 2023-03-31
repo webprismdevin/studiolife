@@ -75,6 +75,8 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
     return formatter.format(cv[0].node.priceV2.amount);
   }
 
+  const more_than_one_image = product.images?.edges?.length > 1;
+
   if (!product) return null;
 
   return (
@@ -102,17 +104,19 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
       </Head>
       <Flex
         flexDirection={["column", "row"]}
-        align="flex-start"
+        align={["center", null, "flex-start"]}
         overflow={["visible"]}
       >
-        <Box flexGrow={1} maxW={["full", "50%"]}>
+        <Box flexGrow={1} maxW={["full", null, "50%"]}>
           <Stack
             direction={["row", null, "column"]}
             overflow={["scroll", null, "hidden"]}
+            h={[360, null, "auto"]}
           >
             {product.images.edges.map((i: any) => (
               <Image
-                maxW={["50%", null, "100%"]}
+                maxW={["100%", null, "100%"]}
+                maxH={["100%", null, "auto"]}
                 key={i.node.url}
                 src={i.node.url}
                 alt={i.node.altText}
@@ -153,7 +157,7 @@ function InformationATC(
       top={[0, 110]}
       direction={["column"]}
       spacing={8}
-      p={[4, 20]}
+      p={[4, 16]}
       maxW={["full", "50%"]}
     >
       {ProductHeader(product, checkPrice, variantId)}
@@ -217,18 +221,18 @@ function ProductHeader(
   checkPrice: (id: string) => string,
   variantId: any
 ) {
+
+  // @ts-ignore
+  const zoned = dayjs(product.date?.value).tz("America/Los_Angeles");
+
   return (
     <Stack direction={"column"} spacing={2} alignItems={"flex-start"}>
       <HStack>
         <Text>
-          {/* @ts-ignore */}
-          {dayjs(product.date?.value).tz("America/Los_Angeles")
-            .format("dddd, MMMM DD, YYYY")}
+          {zoned.format("dddd, MMMM DD, YYYY")}
         </Text>
         <Text>
-          {/* @ts-ignore */}
-          {dayjs(product.date?.value).tz("America/Los_Angeles")
-            .format("hh:mm A PST")}
+          {zoned.format("hh:mm A PST")}
         </Text>
       </HStack>
       <Stack
