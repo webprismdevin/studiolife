@@ -161,8 +161,7 @@ function InformationATC(
       maxW={["full", "50%"]}
     >
       {ProductHeader(product, checkPrice, variantId)}
-      {/* buy now, mobile */}
-      <Box display={["block", null, "none"]}>
+      <Box>
         {BuyNow(variants, variantId, setVariantId, checkPrice, addToCart)}
       </Box>
       <Divider />
@@ -177,10 +176,6 @@ function InformationATC(
       <Button variant="outline" onClick={onOpen}>
         Read Full Description
       </Button>
-      {/* buy now, desktop */}
-      <Box display={["none", null, "block"]}>
-        {BuyNow(variants, variantId, setVariantId, checkPrice, addToCart)}
-      </Box>
     </Stack>
   );
 }
