@@ -285,7 +285,7 @@ function HomePage({
             p={8}
             ml={"auto"}
             maxW={["100%", "50%"]}
-            alignItems="flex-start"
+            alignItems={"flex-start"}
           >
             <Heading as="h2" size="xl">
               we are <span className="studiolife sl-heading">StudioLife</span>
@@ -312,7 +312,7 @@ function HomePage({
             <Stack
               direction={["column", "row"]}
               justify="center"
-              align="stretch"
+              align={["center", null, "stretch"]}
               spacing={6}
               w="full"
             >
@@ -348,7 +348,7 @@ function HomePage({
               )}
             </Stack>
             <NextLink href="/collection/recorded-workshops">
-              <Button variant="solid">see all workshops</Button>
+              <Link>see all workshops</Link>
             </NextLink>
           </VStack>
         )}
