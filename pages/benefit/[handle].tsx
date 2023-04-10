@@ -288,6 +288,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       handle: handle,
       product: res.product,
     },
-    revalidate: 60,
+    revalidate: 10,
   };
 }

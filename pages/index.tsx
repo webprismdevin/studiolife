@@ -34,13 +34,11 @@ const EventCard = dynamic<any>(
 
 const MotionBox = motion(Box);
 
-var utc = require('dayjs/plugin/utc');
-var timezone = require('dayjs/plugin/timezone')
+var utc = require("dayjs/plugin/utc");
+var timezone = require("dayjs/plugin/timezone");
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
-
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 function HomePage({
   homepageData,
@@ -84,7 +82,10 @@ function HomePage({
         <meta property="og:title" content={homepageData.basicSEO?.ogTitle} />
         <meta property="og:url" content={router.asPath} />
         <meta property="og:image" content={homepageData.basicSEO?.ogImage} />
-        <meta property="og:description" content={homepageData.basicSEO?.ogDescription} />
+        <meta
+          property="og:description"
+          content={homepageData.basicSEO?.ogDescription}
+        />
         <meta property="og:type" content="website" />
       </Head>
       <AnimatePresence exitBeforeEnter>
@@ -214,7 +215,7 @@ function HomePage({
       {/* featured events */}
 
       {collections.edges[0]?.node.products.edges.length > 0 && (
-        <Container pt={10} pb={40} maxW="container.lg" ref={featuredEvents}>
+        <Box pt={10} pb={40} ref={featuredEvents}>
           <VStack spacing={6} alignItems={"center"} w="full">
             <Heading size="xl">upcoming live events</Heading>
             <Box
@@ -227,23 +228,34 @@ function HomePage({
             <Divider />
             <Stack
               direction={["column", "row"]}
-              justify="center"
-              align="center"
+              justify={`${
+                collections.edges[0].node.products.edges.length > 3
+                  ? "flex-start"
+                  : "center"
+              }`}
+              align="flex-start"
               spacing={6}
               w="full"
+              overflowX="scroll"
+              overflowY="visible"
+              px={24}
             >
               {collections.edges[0].node.products.edges.map(
                 ({ node }: { node: any }) => (
-                  <Box key={node.id}>
+                  <Box key={node.id} mb={24}>
                     <EventCard
-                      //@ts-ignore
+                      //@ts-ignore prettier-ignore
                       date={dayjs(node.date?.value).tz("America/Los_Angeles").format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
-                      eventName={node.on_page_title?.value ? node.on_page_title.value : node.title}
+                      eventName={
+                        node.on_page_title?.value
+                          ? node.on_page_title.value
+                          : node.title
+                      }
                       eventType={node.productType}
                       image={node.images.edges[0].node.transformedSrc}
                       style={{
-                        minHeight: "100%"
+                        minHeight: "100%",
                       }}
                       shortDesc={
                         node.short_description?.value
@@ -251,7 +263,7 @@ function HomePage({
                           : "No description found. Click Sign Up to learn more."
                       }
                       teacher={node.teacher?.value}
-                      //@ts-ignore
+                      //@ts-ignore prettier-ignore
                       time={dayjs(node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
                       tap={() => router.push(`/event/${node.handle}`)}
                       variant="LiveEvent"
@@ -265,7 +277,7 @@ function HomePage({
               <Link>see all</Link>
             </NextLink>
           </VStack>
-        </Container>
+        </Box>
       )}
 
       {/* about studiolife */}
@@ -317,8 +329,8 @@ function HomePage({
               w="full"
             >
               {collections.edges[1].node.products.edges.map(
-                (product:any, index:number) => {
-                  if(index < 3){
+                (product: any, index: number) => {
+                  if (index < 3) {
                     return (
                       <Box key={product.node.id} minH="100%">
                         <EventCard
@@ -329,7 +341,9 @@ function HomePage({
                           duration={product.node.duration?.value}
                           eventName={product.node.on_page_title?.value}
                           eventType={"Recorded Workshop"}
-                          image={product.node.images.edges[0].node.transformedSrc}
+                          image={
+                            product.node.images.edges[0].node.transformedSrc
+                          }
                           shortDesc={
                             product.node.short_description?.value
                               ? product.node.short_description?.value
@@ -337,12 +351,14 @@ function HomePage({
                           }
                           teacher={product.node.teacher?.value}
                           // time={dayjs(product.node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
-                          tap={() => router.push(`/workshop/${product.node.handle}`)}
+                          tap={() =>
+                            router.push(`/workshop/${product.node.handle}`)
+                          }
                           variant="Workshop"
                           cta={"learn more"}
                         />
                       </Box>
-                    )
+                    );
                   }
                 }
               )}

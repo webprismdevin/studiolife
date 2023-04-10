@@ -361,6 +361,7 @@ export async function getStaticPaths() {
       params: { handle: edge.node.handle },
     })),
     fallback: "blocking",
+
   };
 }
 
@@ -445,5 +446,6 @@ export async function getStaticProps(context: any) {
       handle: handle,
       product: res.product,
     },
+    revalidate: 10,
   };
 }
