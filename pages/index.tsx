@@ -269,8 +269,8 @@ function HomePage({
                           : "No description found. Click Sign Up to learn more."
                       }
                       teacher={node.teacher?.value}
-                      //@ts-ignore prettier-ignore
                       time={dayjs(node.date?.value)
+                        //@ts-expect-error
                         .tz("America/Los_Angeles")
                         .format("hh:mm A PST")}
                       tap={() => router.push(`/event/${node.handle}`)}
