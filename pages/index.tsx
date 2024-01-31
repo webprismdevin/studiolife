@@ -245,8 +245,8 @@ function HomePage({
                 ({ node }: { node: any }) => (
                   <Box key={node.id} mb={24}>
                     <EventCard
-                      //@ts-ignore prettier-ignore
                       date={dayjs(node.date?.value)
+                        // @ts-expect-error
                         .tz("America/Los_Angeles")
                         .format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
