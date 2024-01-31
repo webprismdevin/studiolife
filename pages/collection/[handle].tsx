@@ -101,7 +101,7 @@ export default function CollectionPage({
                       style={{
                         minHeight: "100%"
                       }}
-                      image={p.node.images.edges[0].node.transformedSrc}
+                      image={p.node.images.edges[0]?.node.transformedSrc}
                       shortDesc={
                         p.node.short_description?.value
                           ? p.node.short_description?.value

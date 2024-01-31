@@ -143,6 +143,7 @@ function HomePage({
         </MotionBox>
       </AnimatePresence>
       {/* product features */}
+      {/* @ts-ignore */}
       <Container maxW="container.lg" pt={20} pb={20}>
         <Stack spacing={6} textAlign="center" alignItems={"center"}>
           <Heading size="xl" as="h2">
@@ -245,7 +246,9 @@ function HomePage({
                   <Box key={node.id} mb={24}>
                     <EventCard
                       //@ts-ignore prettier-ignore
-                      date={dayjs(node.date?.value).tz("America/Los_Angeles").format("MMMM DD, YYYY")}
+                      date={dayjs(node.date?.value)
+                        .tz("America/Los_Angeles")
+                        .format("MMMM DD, YYYY")}
                       duration={node.duration?.value}
                       eventName={
                         node.on_page_title?.value
@@ -253,7 +256,10 @@ function HomePage({
                           : node.title
                       }
                       eventType={node.productType}
-                      image={node.images.edges[0].node.transformedSrc}
+                      image={
+                        node.images.edges[0]?.node.transformedSrc ??
+                        "/photos/placeholder.jpg"
+                      }
                       style={{
                         minHeight: "100%",
                       }}
@@ -264,7 +270,9 @@ function HomePage({
                       }
                       teacher={node.teacher?.value}
                       //@ts-ignore prettier-ignore
-                      time={dayjs(node.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
+                      time={dayjs(node.date?.value)
+                        .tz("America/Los_Angeles")
+                        .format("hh:mm A PST")}
                       tap={() => router.push(`/event/${node.handle}`)}
                       variant="LiveEvent"
                       cta="Sign Up"

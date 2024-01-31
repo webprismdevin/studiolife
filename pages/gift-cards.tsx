@@ -16,7 +16,7 @@ export default function GiftCard({ product }: any) {
   const { variant, selectedVariant, selectedVariantImage, handleOptionChange } =
     useVariant(product);
 
-  const { cart, setCart } = useContext(CartContext)
+  const { cart, setCart } = useContext(CartContext);
 
   async function addToCart() {
     const response = await fetch("/api/addtocart", {
@@ -35,10 +35,14 @@ export default function GiftCard({ product }: any) {
   }
 
   return (
+    // @ts-ignore
     <Container maxW="container.xl" py={10}>
       <Stack spacing={4} direction={["column", null, "row"]}>
         <Box>
-          <Image src={selectedVariantImage.url} alt={selectedVariantImage.altText} />
+          <Image
+            src={selectedVariantImage.url}
+            alt={selectedVariantImage.altText}
+          />
         </Box>
         <Stack spacing={4} maxW={["full", null, "50%"]}>
           <Heading size={"2xl"}>Gift Cards</Heading>
@@ -52,10 +56,12 @@ export default function GiftCard({ product }: any) {
               ))}
             </Select>
           </Box>
-          <Button width="full" onClick={addToCart}>Add To Cart</Button>
+          <Button width="full" onClick={addToCart}>
+            Add To Cart
+          </Button>
           <Box
             dangerouslySetInnerHTML={{
-              __html: product.descriptionHtml
+              __html: product.descriptionHtml,
             }}
           />
         </Stack>
@@ -119,7 +125,10 @@ export async function getStaticProps() {
             node {
               id
               title
-              price
+              price {
+                amount
+                currencyCode
+              }
               selectedOptions {
                 name
                 value
