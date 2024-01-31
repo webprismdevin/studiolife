@@ -98,7 +98,7 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
           } | StudioLife Seattle`}
         />
         <meta property="og:url" content={router.asPath} />
-        <meta property="og:image" content={product.images.edges[0].node.url} />
+        <meta property="og:image" content={product.images.edges[0]?.node.url} />
         <meta property="og:description" content={product.short_description} />
         <meta property="og:type" content="website" />
       </Head>
@@ -152,6 +152,7 @@ function InformationATC(
   addToCart: () => Promise<void>
 ) {
   return (
+    // @ts-ignore
     <Stack
       position={["static", null, "sticky"]}
       top={[0, 110]}
@@ -216,19 +217,14 @@ function ProductHeader(
   checkPrice: (id: string) => string,
   variantId: any
 ) {
-
   // @ts-ignore
   const zoned = dayjs(product.date?.value).tz("America/Los_Angeles");
 
   return (
     <Stack direction={"column"} spacing={2} alignItems={"flex-start"}>
       <HStack>
-        <Text>
-          {zoned.format("dddd, MMMM DD, YYYY")}
-        </Text>
-        <Text>
-          {zoned.format("hh:mm A PST")}
-        </Text>
+        <Text>{zoned.format("dddd, MMMM DD, YYYY")}</Text>
+        <Text>{zoned.format("hh:mm A PST")}</Text>
       </HStack>
       <Stack
         direction={["column", null, "row"]}
@@ -361,7 +357,6 @@ export async function getStaticPaths() {
       params: { handle: edge.node.handle },
     })),
     fallback: "blocking",
-
   };
 }
 

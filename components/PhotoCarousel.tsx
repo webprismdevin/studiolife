@@ -24,11 +24,12 @@ function PhotoCarousel({ images }: any) {
       minW={["100%"]}
       maxH={["400px", "100%"]}
     >
+      {/* @ts-ignore */}
       <AspectRatio ratio={1}>
         <AnimatePresence exitBeforeEnter>
           <MotionImage
-            key={images[index].node.url}
-            src={images[index].node.url}
+            key={images[index]?.node.url}
+            src={images[index]?.node.url}
             alt={``}
             objectFit="fill"
             animate={{

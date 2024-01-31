@@ -81,9 +81,10 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
         </title>
         <meta name="description" content={product.short_description} />
       </Head>
+      {/* @ts-ignore */}
       <Flex flexDirection={["column", "row"]}>
         <Box flexGrow={1} maxW={["full", "50%"]}>
-          <PhotoCarousel images={product.images.edges} />
+          <PhotoCarousel images={product.images?.edges} />
         </Box>
         <Stack
           direction={["column"]}
@@ -255,7 +256,7 @@ export async function getStaticPaths() {
     paths: res.products.edges.map((edge: any) => ({
       params: { handle: edge.node.handle },
     })),
-    fallback: 'blocking',
+    fallback: "blocking",
   };
 }
 

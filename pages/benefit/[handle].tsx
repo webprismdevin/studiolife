@@ -26,20 +26,18 @@ import dayjs from "dayjs";
 
 //to-do: add "associated products" so that they can add additional kits like with Lettering for Light
 
+var utc = require("dayjs/plugin/utc");
+var timezone = require("dayjs/plugin/timezone");
 
-var utc = require('dayjs/plugin/utc');
-var timezone = require('dayjs/plugin/timezone')
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const Product = ({ handle, product }: { handle: string; product: any }) => {
   const { cart, setCart } = useContext(CartContext);
   const [variantId, setVariantId] = useState(() => {
     if (!product) return null;
 
-    return product.variants.edges[0].node.id;
+    return product.variants.edges[0]?.node.id;
   });
 
   const variants = product?.variants.edges;
@@ -74,6 +72,7 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
           {product.title} | {process.env.NEXT_PUBLIC_SHOP_NAME}
         </title>
       </Head>
+      {/* @ts-ignore */}
       <Flex flexDirection={["column", "row"]}>
         <AspectRatio
           ratio={1 / 1}
@@ -82,7 +81,7 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
           top={0}
         >
           <Image
-            src={product.images.edges[0].node.src}
+            src={product.images.edges[0]?.node.src}
             alt={``}
             maxH={["400px", "100vh"]}
           />
@@ -92,10 +91,14 @@ const Product = ({ handle, product }: { handle: string; product: any }) => {
             <Stack direction={"column"} spacing={2} alignItems={"flex-start"}>
               <HStack>
                 {/* @ts-ignore */}
-                <Text>{new Date(product.date?.value).toLocaleDateString()}</Text>
                 <Text>
-                  {/* @ts-ignore */}
-                  {dayjs(product.date?.value).tz("America/Los_Angeles").format("hh:mm A PST")}
+                  {new Date(product.date?.value).toLocaleDateString()}
+                </Text>
+                <Text>
+                  {dayjs(product.date?.value)
+                    // @ts-expect-error
+                    .tz("America/Los_Angeles")
+                    .format("hh:mm A PST")}
                 </Text>
               </HStack>
               <Heading>{product.title}</Heading>
@@ -217,7 +220,7 @@ export async function getStaticPaths() {
     paths: res.products.edges.map((edge: any) => ({
       params: { handle: edge.node.handle },
     })),
-    fallback: 'blocking',
+    fallback: "blocking",
   };
 }
 
